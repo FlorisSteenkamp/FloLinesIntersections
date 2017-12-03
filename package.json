@@ -1,6 +1,6 @@
 {
   "name": "flo-lines-intersections",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Simple library for finding lines intersections fast.",
   "repository": {
     "type": "git",
@@ -29,11 +29,11 @@
   "homepage": "http://mat-demo.appspot.com/#!/test-polynomials",
   "devDependencies": {
     "babel-cli": "^6.22.2",
-	  "babel-core": "^6.26.0",
+    "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.0",
     "babelify": "^7.3.0",
-    "browserify": "^13.1.0",    
-  	"chai": "^4.1.2",
+    "browserify": "^13.1.0",
+    "chai": "^4.1.2",
     "coveralls": "^3.0.0",
     "gulp": "^3.9.1",
     "gulp-derequire": "^2.1.0",
@@ -43,7 +43,7 @@
     "gulp-typescript": "^3.2.3",
     "gulp-uglify": "^2.0.0",
     "istanbul": "^0.4.5",
-	  "jsdoc": "3.4.x",
+    "jsdoc": "3.4.x",
     "mocha": "^3.5.3",
     "nyc": "^11.2.1",
     "transform": "^1.1.2",
@@ -64,6 +64,15 @@
     "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls"
   },
   "browserify": {
-    "transform": [["babelify", { "presets": ["env"] }]]
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "env"
+          ]
+        }
+      ]
+    ]
   }
 }
