@@ -11,6 +11,7 @@ var rename     = require('gulp-rename');
 var derequire  = require('gulp-derequire');
 var ts         = require("gulp-typescript");
 var tsify      = require("tsify");
+var babelify   = require("babelify");
 
 var tsProject  = ts.createProject("./tsconfig.json");
 
@@ -48,21 +49,28 @@ function browserTask() {
 		console.error(err.toString());
 		console.error(err.stack); 
 	}
-	
     browserify({
-    		entries: '../index.ts',
     		standalone: 'FloLinesIntersections',
-   	})
-	.plugin(tsify)
+	})
+	.add('browser.js')   
+	.plugin(tsify, { 
+		target: "es2015", 
+		allowJs: true, 
+		declaration: false 
+	})
+	.transform(babelify, {
+		presets: ['env'],
+		extensions: ['.ts'] 
+	})
 	.bundle(showOnError)
 	.pipe(source('index.js'))
 	.pipe(derequire())
-	.pipe(gulp.dest('../browser/'))
+	.pipe(gulp.dest('browser/'))
 	.pipe(rename({ extname: '.min.js' }))
 	.pipe(buffer())
 	.pipe(sourcemaps.init())
 	.pipe(uglify())
 	.on('error', showOnError)
 	.pipe(sourcemaps.write('./'))
-	.pipe(gulp.dest('../browser/'));
+	.pipe(gulp.dest('browser/'));
 }
