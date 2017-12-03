@@ -1,7 +1,7 @@
-'use strict'
 
-// The slope tolerance at which two lines are considered either parallel 
-// or colinear
+// The slope tolerance at which two lines are considered either parallel or 
+// colinear.
+
 const DELTA = 1e-10; 
 
 const EVENT_LEFT  = 0;
@@ -9,20 +9,21 @@ const EVENT_RIGHT = 1;
 
 
 /**
- * <p>
  * Returns true if the two given lines have an endpoint in common..
- * </p>
- * <p>
+ * 
  * It is the default function for checking if the intersection between 
  * two lines should be ignored.
- * </p> 
- * @ignore
- * @param {number[][]} l1 - A line.
- * @param {number[][]} l2 - Another line.
+ * 
+ * @private
+ * @param l1 - A line.
+ * @param l2 - Another line.
  * @returns {boolean} True if any endpoints between the supplied lines 
  * coincide, false otherwise.
  */
-function ignoreIntersectionIfEndpointsCoincide(l1,l2) {
+function ignoreIntersectionIfEndpointsCoincide(
+            l1: number[][],
+            l2: number[][]) {
+
 	let [p1,p2] = l1;
 	let [p3,p4] = l2;
 	return ((p1[0] === p3[0] && p1[1] === p3[1]) || 
@@ -33,38 +34,32 @@ function ignoreIntersectionIfEndpointsCoincide(l1,l2) {
 
 
 /**
- * <p>
- * Find segment-segment intersections via a very fast modified version  
- * of the Bentley-Ottmann algorithm.
- * </p>
- * <p> 
- * In practice it almost always runs much much faster than 
- * Bentley-Ottmann. Even when there are tens of thousands
- * of line segments with hundreds of thousands of intersection the  
- * Bentley-Ottmann algorithm still do not come close even though it has
- * a better asymptotic O((n+k)log-n) run time (where k is the 
+ * Find segment-segment intersections via a very fast modified version of the 
+ * Bentley-Ottmann algorithm.
+ *  
+ * In practice it almost always runs much much faster than Bentley-Ottmann. Even 
+ * when there are tens of thousands of line segments with hundreds of thousands 
+ * of intersection the Bentley-Ottmann algorithm still do not come close even 
+ * though it has a better asymptotic O((n+k)log-n) run time (where k is the 
  * number of intersections and n is the number of lines).
- * </p>
- * <p>
- * The algorithm is the same as Bentley-Ottmann except that it replaces
- * a binary tree in the implementation with a flat linked list. 
- * </p>
- * <p>
+ * 
+ * The algorithm is the same as Bentley-Ottmann except that it replaces a binary 
+ * tree in the implementation with a flat linked list. 
+ * 
  * See http://geomalgorithms.com/a09-_intersect-3.html
- * </p>
- * @param {number[][][]} ls - An array of line segments.
- * @param {function|boolean} ignoreIntersectionFunc - If set to true
- * line segments with coinciding endpoints' intersection will be 
- * ignored. If falsey, all intersections will be returned. If a function 
- * is provided (taking as parameters 2 lines and returns true if the 
- * intersection between those two lines should be ignored) then those
- * intersections for which the function returns true will be ignored.
- * @returns {object} An array of objects of the form {p: number[], 
- * l1, l2} where p is a point of intersection and l1 and l2 are the two 
- * line segments that intersect. Note that l1 and l2 reference the same
- * line segment objects passed in to this function. This allows for the
- * attachedment of additional properties to the line segment objects
- * that won't be lost.
+ * 
+ * Returns an array of objects of the form {p: number[], l1, l2} where p is a 
+ * point of intersection and l1 and l2 are the two line segments that intersect. 
+ * Note that l1 and l2 reference the same line segment objects passed in to this 
+ * function. This allows for the attachedment of additional properties to the 
+ * line segment objects that won't be lost.
+ * 
+ * @param ls - An array of line segments.
+ * @param ignoreIntersectionFunc - If set to true line segments with coinciding 
+ * endpoints' intersection will be ignored. If falsey, all intersections will be 
+ * returned. If a function is provided (taking as parameters 2 lines and returns 
+ * true if the intersection between those two lines should be ignored) then 
+ * those intersections for which the function returns true will be ignored.
  * @example
  * modifiedBentleyOttmann([
  * 			[[0,0],     [1,1]], 
@@ -74,7 +69,10 @@ function ignoreIntersectionIfEndpointsCoincide(l1,l2) {
  *			[[0.2,0],   [0.2,1]]
  * ]); //=>
  */ 
-function modifiedBentleyOttmann(ls, ignoreIntersectionFunc) {
+function modifiedBentleyOttmann(
+        ls: number[][][], 
+        ignoreIntersectionFunc: ((l1: number[][], l2: number[][]) => boolean) | boolean) {
+
 	if (ignoreIntersectionFunc === true) { 
 		ignoreIntersectionFunc = ignoreIntersectionIfEndpointsCoincide;
 	}
@@ -101,29 +99,6 @@ function modifiedBentleyOttmann(ls, ignoreIntersectionFunc) {
     	
    		if (event.type === EVENT_LEFT) {
    			
-   			/*
-   			if (activeLines.head) {
-   				let node = activeLines.head;
-   				while (node) {
-   					let activeLine = node.item;
-   				
-   					let p = segSegIntersection(
-   	   						l, activeLine, DELTA
-   	   				);
-   					
-   	   				if (!p || (ignoreIntersectionFunc && 
-   	   						ignoreIntersectionFunc(l,activeLine))) { 
-   	   					node = node.next;		
-   	   					continue;
-   	   				}
-   	   				
-   	   				intersections.push({p, l1: l, l2: activeLine });
-   	   			
-   					node = node.next;
-   				}
-   			}
-   			*/
-
    			for (let activeLine of activeLines.values()) {
 				let p = segSegIntersection(
    						l, activeLine, DELTA
@@ -150,31 +125,17 @@ function modifiedBentleyOttmann(ls, ignoreIntersectionFunc) {
 }
 
 
-Event.compare = function(a,b) {
-	let pA = a.p;
-	let pB = b.p;
-	
-	let res = pA[0] - pB[0];
-	if (res !== 0) { 
-		return res; 
-	}
-	
-	return pA[1] - pB[1];
-}
-
-
-let deltaCompare = x => Math.abs(x) < DELTA ? 0 : x;
+let deltaCompare = (x: number) => Math.abs(x) < DELTA ? 0 : x;
 
 
 /**
  * Orients the line so that it goes from left to right and if vertical 
- * from bottom to top.
+ * from bottom to top. Returns the oriented line.
  * 
- * @ignore 
- * @param {number[][]} l - A line.
- * @returns {number[][]} - An oriented line.
+ * @private
+ * @param l - A line.
  */
-function orient(l) {
+function orient(l: number[][]) {
 	let [[x0, y0],[x1,y1]] = l;
 	
 	if (x0 < x1) { 
@@ -202,10 +163,29 @@ function orient(l) {
  * @param {number[][]} l - A line.
  * @param {number[]} p - A point.
  */
-function Event(type, l, p) {
-	this.type = type;
-	this.l    = l;
-	this.p    = p;
+class Event {
+    type: number;
+    l: number[][];
+    p: number[];
+
+    constructor(type: number, l: number[][], p: number[]) {
+	    this.type = type;
+	    this.l    = l;
+        this.p    = p;
+    }
+
+
+    static compare(a: { p: number[] }, b: { p: number[] }) {
+        let pA = a.p;
+        let pB = b.p;
+        
+        let res = pA[0] - pB[0];
+        if (res !== 0) { 
+            return res; 
+        }
+        
+        return pA[1] - pB[1];
+    }
 }
 
 
@@ -224,12 +204,13 @@ function Event(type, l, p) {
  * or undefined if they don't or if they intersect at infinitely many 
  * points. 
  */
-function segSegIntersection(ab, cd, delta) {
-	if (delta === undefined) { delta = 1e-10; }
-	
+function segSegIntersection(
+            ab: number[][], 
+            cd: number[][], 
+            delta: number = 1e-10) {
+
 	let [a,b] = ab;
 	let [c,d] = cd;
-	
 	 
 	let denom = 
 		(b[0] - a[0])*(d[1] - c[1]) - (b[1] - a[1])*(d[0] - c[0]);
@@ -262,4 +243,4 @@ function segSegIntersection(ab, cd, delta) {
 }
 
 
-module.exports = modifiedBentleyOttmann;
+export default modifiedBentleyOttmann;
