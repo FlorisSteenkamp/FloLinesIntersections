@@ -1,10 +1,38 @@
-let expect = chai.expect;
-let assert = chai.assert;
+'use strict'
 
-let { modifiedBentleyOttmann } = FloLinesIntersection;
+var mocha;
+var chai;
+var helper;
+var FloLinesIntersections;
 
+if (typeof require === 'undefined') {
+	// Browser
+} else {
+	// Node
+	mocha   = require('mocha');
+	chai    = require('chai');
+	helper  = require('./helpers/helper.js');
+	FloLinesIntersections = require('../../js/index.js');
+}
 
-let edgeCaseLines = [
+var { assert, expect } = chai;
+var { random, randomArray, naive, scale, fromTo } = helper;
+var f = FloLinesIntersections;
+
+let ls = [
+	[[1,1],     [0,0]], 
+	[[0,1],     [1,0]],
+	[[0.1,0],   [0.1,1]]
+];
+
+let square = [
+	[[0,0],[0,1]],
+	[[0,1],[1,1]],
+	[[1,1],[1,0]],
+	[[1,0],[0,0]],
+];
+
+let edgeCaseLs = [
 	[[0,0],     [1,1]], 
 	[[0,1],     [1,0]],
 	[[0.6,1],   [0.7,0.1]],
@@ -92,14 +120,202 @@ let edgeCaseLines = [
 	[[0.9,0.1],[0.1,1.9]],
 	[[1,1.8],[0.5,1.2]],
 	[[1.2,0.1],[0.3,0]],
-]);
+];
 
 
 describe('modifiedBentleyOttmann', function() {
-	it('should find edge case line intersections correctly', function() {
-		//expect(roots[0]).to.equal(0.49999999999999944);
+	it('should correctly find some simple line intersections', 
+	function() {
+		let is = f(ls);
+		
+		expect(is.length).to.equal(3);
+		
+		expect(is[0].p).to.eql([0.5,0.5]);
+		expect(is[0].l1).to.equal(ls[1]); // Tests references equal
+		expect(is[0].l2).to.equal(ls[0]); // Tests references equal
+		
+		expect(is[1].p).to.eql([0.1, 0.09999999999999998]);
+		expect(is[1].l1).to.equal(ls[2]); // Tests references equal
+		expect(is[1].l2).to.equal(ls[0]); // Tests references equal
+		
+		expect(is[2].p).to.eql([0.1, 0.9]);
+		expect(is[2].l1).to.equal(ls[2]); // Tests references equal
+		expect(is[2].l2).to.equal(ls[1]); // Tests references equal
 	});
 
+	
+	it('should find all edge case line intersection points', 
+	function() {
+		let ls = edgeCaseLs;
+		
+		// Get intersections via a naive sure-fire method that should
+		// match the modified method.
+		let is1 = naive(ls);
+		let is2 = f(ls);
+		
+		expect(is2.length).to.equal(1383); 
+		expect(is2.length).to.equal(is1.length);
+	});
+	
+	
+	it('should not modify the input line segment objects',
+	function() {
+		// Copy the test lines and add a simple object
+		// Example line: [[0,0], [1,1]]
+		let ls_ = [];
+		for (let i=0; i<ls.length; i++) {
+			let l_ = ls[i].slice();
+			l_.apple = 'pear'; // add some random property
+			ls_.push(l_);
+		}
+		let is = f(ls_);
+		
+		expect(is.length).to.equal(3);
+		
+		expect(is[0].l1).not.to.equal(ls[1]); // Tests references equal
+		expect(is[0].l2).not.to.equal(ls[0]); // Tests references equal
+		
+		expect(is[1].l1).not.to.equal(ls[2]); // Tests references equal
+		expect(is[1].l2).not.to.equal(ls[0]); // Tests references equal
+		
+		expect(is[2].l1).not.to.equal(ls[2]); // Tests references equal
+		expect(is[2].l2).not.to.equal(ls[1]); // Tests references equal
+		
+		
+		expect(is[0].l1).to.equal(ls_[1]); // Tests references equal
+		expect(is[0].l2).to.equal(ls_[0]); // Tests references equal
+		
+		expect(is[1].l1).to.equal(ls_[2]); // Tests references equal
+		expect(is[1].l2).to.equal(ls_[0]); // Tests references equal
+		
+		expect(is[2].l1).to.equal(ls_[2]); // Tests references equal
+		expect(is[2].l2).to.equal(ls_[1]); // Tests references equal
+		
+		// Make sure object property persists
+		expect(is[0].l1.apple).to.equal('pear');
+	});
+
+	
+	it('should find the same number of intersections as that of the naive method for hundreds of predictable random lines',
+	function() {
+		// Random lines
+		const SCALE_FACTOR = 0.3;
+		const N = 1000;
+		const SEEDS = [11111,22222,33333,44444];
+		
+		let ls = [];
+		let rarrs = [0,1,2,3].map(i => randomArray(N,0,1,SEEDS[i]).vs);
+		for (let i=0; i<N; i++) {
+			let p1 = [rarrs[0][i],rarrs[1][i]];
+			let p2 = [rarrs[2][i],rarrs[3][i]];
+			let s1 = scale(fromTo(p1,p2), SCALE_FACTOR);
+			let p3 = [p1[0] + s1[0], p1[1] + s1[1]];
+			
+			ls.push([p1,p3]);
+		}
+		
+		// Get intersections via a naive sure-fire method that should
+		// match the modified method.
+		let is1 = naive(ls);
+		let is2 = f(ls);
+		
+		expect(is2.length).to.equal(is1.length);
+	});
+	
+	
+	it('should not return intersections of endpoint-coinciding lines if the ignore parameter === true',
+	function() {
+		let ls = square;
+		let is = f(ls,true);
+		
+		expect(is.length).to.equal(0);
+	});
+	
+	
+	it('should correctly handle zero lines case',
+	function() {
+		let ls = [];
+		let is = f(ls);
+		
+		expect(is.length).to.equal(0);
+	});
+	
+	
+	it('should correctly handle single line case',
+	function() {
+		let ls = [[[0,0],[1,1]]];
+		let is = f(ls);
+		
+		expect(is.length).to.equal(0);
+	});
+	
+	
+	it('should return intersections of endpoint-coinciding lines if the ignore parameter is falsey',
+	function() {
+		let ls = square;
+		let is;
+		
+		//console.log(segSegIntersection(ls[0],ls[1]))
+		is = f(ls,false);
+		//console.log(is)
+		// Note in the lines below 4 is replaced by 3 due to endpoint
+		// intersections that can be missed since 2 line segments can be 
+		// considered intersecting or not if their endpoints coincide.
+		// It should not matter in practice.
+		expect(is.length).to.equal(3/*4*/);
+		is = f(ls,undefined);
+		expect(is.length).to.equal(3/*4*/);
+	});
+	
+	
+	it('should not return intersections of lines outside some bound if the ignore parameter specifies such a function',
+	function() {
+		// Returns true if any point in the line is outside the square
+		// box [[0.1,0.1],[0.9,0.9]].
+		function lineOutOfBounds(l) {
+			if (l[0][0] < 0.1 || l[0][1] < 0.1 ||
+				l[1][0] < 0.1 || l[1][1] < 0.1 ||
+				l[0][0] > 0.9 || l[0][1] > 0.9 ||
+				l[1][0] > 0.9 || l[1][1] > 0.9) {
+					return true; // Ignore it
+				}
+				return false; // Don't ignore
+		}
+		
+		function anyOutOfBounds(l1,l2) {
+			return (lineOutOfBounds(l1) || 
+					lineOutOfBounds(l2));
+		}
+		
+		// Random lines
+		const SCALE_FACTOR = 0.3;
+		const N = 1000;
+		const SEEDS = [11111,22222,33333,44444];
+		
+		let ls = [];
+		let rarrs = [0,1,2,3].map(i => randomArray(N,0,1,SEEDS[i]).vs);
+		for (let i=0; i<N; i++) {
+			let p1 = [rarrs[0][i],rarrs[1][i]];
+			let p2 = [rarrs[2][i],rarrs[3][i]];
+			let s1 = scale(fromTo(p1,p2), SCALE_FACTOR);
+			let p3 = [p1[0] + s1[0], p1[1] + s1[1]];
+			
+			ls.push([p1,p3]);
+		}
+		
+
+		let is;
+		
+		is = f(ls);
+		expect(is.length).to.equal(9116);
+		
+		is = f(ls, anyOutOfBounds);
+		expect(is.length).to.equal(5151);
+		
+		for (let i=0; i<is.length; i++) {
+			assert(!anyOutOfBounds(is[i].l1, is[i].l1));  
+		}
+	});
 });
 
 

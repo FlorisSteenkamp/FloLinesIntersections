@@ -1,22 +1,33 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://travis-ci.org/FlorisSteenkamp/FloPoly.svg?branch=master)](https://travis-ci.org/FlorisSteenkamp/FloPoly)
-[![Coverage Status](https://coveralls.io/repos/github/FlorisSteenkamp/FloPoly/badge.svg?branch=master)](https://coveralls.io/github/FlorisSteenkamp/FloPoly?branch=master)
+[![Build Status](https://travis-ci.org/FlorisSteenkamp/FloLinesIntersections.svg?branch=master)](https://travis-ci.org/FlorisSteenkamp/FloPoly)
+[![Coverage Status](https://coveralls.io/repos/github/FlorisSteenkamp/FloLinesIntersections/badge.svg?branch=master)](https://coveralls.io/github/FlorisSteenkamp/FloLinesIntersections?branch=master)
 
-The focus is to find real polynomial roots from degree 2 (quadratic) up to about degree 20 as
+Find real polynomial roots from degree 2 (quadratic) up to about degree 20 as
 accurately and as fast as possible, e.g.  
 ```javascript
-FloPoly.allRoots([1, -21, 175, -735, 1624, -1764, 720]); //=> [0.9999999999999997, 2.0000000000000013, 2.9999999999999316, 4.000000000000096, 5.000000000000012, 6.000000000000028]
+let ls = [
+	[[1,1],     [0,0]], 
+	[[0,1],     [1,0]],
+	[[0.1,0],   [0.1,1]]
+];
+FloLinesIntersections(ls); //=> [
+	{p: [0.5, 0.5], l1, l2}, {p: [0.1, 0.09999999999999998], l1, l2}, {p: [0.1, 0.9], l1, l2}	
 ```
 
+# Features
+* Fast
+* Results preserves 
+* Functional
+
 # Documentation, Benchmarks and more
-Please visit [the site](http://mat-demo.appspot.com/#!/test-polynomials).
+Please visit [the site](http://mat-demo.appspot.com/#!/lines-intersections).
 
 # Installation
 
-## Node (or the browser if you use [Browserify](http://browserify.org)) 
+## Node (or the browser) 
 
 ```cli
-npm install flo-poly
+npm install flo-lines-intersections
 ```
 
 ## Browser

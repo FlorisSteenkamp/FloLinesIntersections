@@ -9,7 +9,7 @@
         ],
         "filename": "modified-bentley-ottmann.js",
         "lineno": 27,
-        "path": "C:\\Projects\\LinesIntersection\\js\\lib",
+        "path": "C:\\Projects\\LinesIntersections\\js\\lib",
         "code": {
           "id": "astnode100000027",
           "name": "ignoreIntersectionIfEndpointsCoincide",
@@ -62,15 +62,15 @@
       "___s": true
     },
     {
-      "comment": "/**\r\n * <p>\r\n * Find segment-segment intersections via an ultra-fast modified version  \r\n * of the Bentley-Ottmann algorithm.\r\n * </p>\r\n * <p> \r\n * In practice it almost always runs much much faster than \r\n * Bentley-Ottmann. Even when there are tens of thousands\r\n * of line segments with hundreds of thousands of intersection the  \r\n * Bentley-Ottmann algorithm still do not come close even though it has\r\n * a better asymptotic O((n+k)log-n) run time (where k is the \r\n * number of intersections and n is the number of lines).\r\n * </p>\r\n * <p>\r\n * The algorithm is the same as Bentley-Ottmann except that it replaces\r\n * a binary tree in the implementation with a flat linked list. \r\n * </p>\r\n * <p>\r\n * See http://geomalgorithms.com/a09-_intersect-3.html\r\n * </p>\r\n * @param {number[][][]} ls - An array of lines.\r\n * @param {function} ignoreIntersectionFunc - A function taking 2 lines\r\n * and returns true if the intersection between those two lines should\r\n * be ignored. The default is ignoreIntersectionIfEndpointsCoincide.\r\n * If not supplied (i.e. undefined) no intersections will be ignored.\r\n * @returns {object} An array of objects of the form {p: number[], \r\n * l1: number[][], l2: number[][]} where p is a point of intersection\r\n * and l1 and l2 are the two lines that intersect.\r\n * @example\r\n * modifiedBentleyOttmann([\r\n * \t\t\t[[0,0],     [1,1]], \r\n *\t\t\t[[0,1],     [1,0]],\r\n *\t\t\t[[0.6,1],   [0.7,0.1]],\r\n *\t\t\t[[0,0.4],   [1,0.4]],\r\n *\t\t\t[[0.2,0],   [0.2,1]]\r\n * ]); //=>\r\n */",
+      "comment": "/**\r\n * <p>\r\n * Find segment-segment intersections via a very fast modified version  \r\n * of the Bentley-Ottmann algorithm.\r\n * </p>\r\n * <p> \r\n * In practice it almost always runs much much faster than \r\n * Bentley-Ottmann. Even when there are tens of thousands\r\n * of line segments with hundreds of thousands of intersection the  \r\n * Bentley-Ottmann algorithm still do not come close even though it has\r\n * a better asymptotic O((n+k)log-n) run time (where k is the \r\n * number of intersections and n is the number of lines).\r\n * </p>\r\n * <p>\r\n * The algorithm is the same as Bentley-Ottmann except that it replaces\r\n * a binary tree in the implementation with a flat linked list. \r\n * </p>\r\n * <p>\r\n * See http://geomalgorithms.com/a09-_intersect-3.html\r\n * </p>\r\n * @param {number[][][]} ls - An array of lines.\r\n * @param {function} ignoreIntersectionFunc - A function taking 2 lines\r\n * and returns true if the intersection between those two lines should\r\n * be ignored. The default is ignoreIntersectionIfEndpointsCoincide.\r\n * If not supplied (i.e. undefined) no intersections will be ignored.\r\n * @returns {object} An array of objects of the form {p: number[], \r\n * l1: number[][], l2: number[][]} where p is a point of intersection\r\n * and l1 and l2 are the two lines that intersect.\r\n * @example\r\n * modifiedBentleyOttmann([\r\n * \t\t\t[[0,0],     [1,1]], \r\n *\t\t\t[[0,1],     [1,0]],\r\n *\t\t\t[[0.6,1],   [0.7,0.1]],\r\n *\t\t\t[[0,0.4],   [1,0.4]],\r\n *\t\t\t[[0.2,0],   [0.2,1]]\r\n * ]); //=>\r\n */",
       "meta": {
         "range": [
-          2493,
-          3816
+          2491,
+          3814
         ],
         "filename": "modified-bentley-ottmann.js",
         "lineno": 74,
-        "path": "C:\\Projects\\LinesIntersection\\js\\lib",
+        "path": "C:\\Projects\\LinesIntersections\\js\\lib",
         "code": {
           "id": "astnode100000104",
           "name": "modifiedBentleyOttmann",
@@ -93,7 +93,7 @@
           "p": "modifiedBentleyOttmann~p"
         }
       },
-      "description": "<p>\rFind segment-segment intersections via an ultra-fast modified version  \rof the Bentley-Ottmann algorithm.\r</p>\r<p> \rIn practice it almost always runs much much faster than \rBentley-Ottmann. Even when there are tens of thousands\rof line segments with hundreds of thousands of intersection the  \rBentley-Ottmann algorithm still do not come close even though it has\ra better asymptotic O((n+k)log-n) run time (where k is the \rnumber of intersections and n is the number of lines).\r</p>\r<p>\rThe algorithm is the same as Bentley-Ottmann except that it replaces\ra binary tree in the implementation with a flat linked list. \r</p>\r<p>\rSee http://geomalgorithms.com/a09-_intersect-3.html\r</p>",
+      "description": "<p>\rFind segment-segment intersections via a very fast modified version  \rof the Bentley-Ottmann algorithm.\r</p>\r<p> \rIn practice it almost always runs much much faster than \rBentley-Ottmann. Even when there are tens of thousands\rof line segments with hundreds of thousands of intersection the  \rBentley-Ottmann algorithm still do not come close even though it has\ra better asymptotic O((n+k)log-n) run time (where k is the \rnumber of intersections and n is the number of lines).\r</p>\r<p>\rThe algorithm is the same as Bentley-Ottmann except that it replaces\ra binary tree in the implementation with a flat linked list. \r</p>\r<p>\rSee http://geomalgorithms.com/a09-_intersect-3.html\r</p>",
       "params": [
         {
           "type": {
@@ -138,12 +138,12 @@
       "comment": "/**\r\n * Returns zero if the two given event points coincide else return > 0 \r\n * if the first point has a greater x coordinate or, if x coordinates \r\n * are equal if the first point's y is greater.\r\n * @ignore\r\n */",
       "meta": {
         "range": [
-          4038,
-          4229
+          4036,
+          4227
         ],
         "filename": "modified-bentley-ottmann.js",
         "lineno": 137,
-        "path": "C:\\Projects\\LinesIntersection\\js\\lib",
+        "path": "C:\\Projects\\LinesIntersections\\js\\lib",
         "code": {
           "id": "astnode100000305",
           "name": "Event.compare",
@@ -173,12 +173,12 @@
       "comment": "/**\r\n * Orients the line so that it goes from left to right and if vertical \r\n * from bottom to top.\r\n * \r\n * @ignore \r\n * @param {number[][]} l - A line.\r\n * @returns {number[][]} - An oriented line.\r\n */",
       "meta": {
         "range": [
-          4500,
-          4788
+          4498,
+          4786
         ],
         "filename": "modified-bentley-ottmann.js",
         "lineno": 161,
-        "path": "C:\\Projects\\LinesIntersection\\js\\lib",
+        "path": "C:\\Projects\\LinesIntersections\\js\\lib",
         "code": {
           "id": "astnode100000369",
           "name": "orient",
@@ -225,12 +225,12 @@
       "comment": "/**\r\n * Event class\r\n * \r\n * @ignore\r\n * @constructor\r\n * @param {number} type - 0 -> left endpoint, 1 -> right endpoint\r\n * @param {number[][]} l - A line.\r\n * @param {number[]} p - A point.\r\n */",
       "meta": {
         "range": [
-          4992,
-          5077
+          4990,
+          5075
         ],
         "filename": "modified-bentley-ottmann.js",
         "lineno": 189,
-        "path": "C:\\Projects\\LinesIntersection\\js\\lib",
+        "path": "C:\\Projects\\LinesIntersections\\js\\lib",
         "code": {
           "id": "astnode100000421",
           "name": "Event",
@@ -294,7 +294,7 @@
         ],
         "filename": "seg-seg-intersection.js",
         "lineno": 19,
-        "path": "C:\\Projects\\LinesIntersection\\js\\lib",
+        "path": "C:\\Projects\\LinesIntersections\\js\\lib",
         "code": {
           "id": "astnode100000458",
           "name": "segSegIntersection",
@@ -366,8 +366,8 @@
       "kind": "package",
       "longname": "package:undefined",
       "files": [
-        "C:\\Projects\\LinesIntersection\\js\\lib\\modified-bentley-ottmann.js",
-        "C:\\Projects\\LinesIntersection\\js\\lib\\seg-seg-intersection.js"
+        "C:\\Projects\\LinesIntersections\\js\\lib\\modified-bentley-ottmann.js",
+        "C:\\Projects\\LinesIntersections\\js\\lib\\seg-seg-intersection.js"
       ],
       "___id": "T000002R000048",
       "___s": true
