@@ -1,6 +1,6 @@
 {
   "name": "flo-lines-intersections",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Simple library for finding lines intersections fast.",
   "repository": {
     "type": "git",
