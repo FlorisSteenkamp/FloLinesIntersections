@@ -12,12 +12,28 @@ var derequire  = require('gulp-derequire');
 var ts         = require("gulp-typescript");
 var tsify      = require("tsify");
 var babelify   = require("babelify");
+var typedoc    = require("gulp-typedoc");
+
 
 var tsProject  = ts.createProject("./tsconfig.json");
 
 gulp.task('default', nodeTask);
 gulp.task('node',    nodeTask);
 gulp.task('browser', browserTask);
+gulp.task("docs",    docsTask);
+
+
+function docsTask() {
+    return gulp
+        .src(["index.ts"])
+        .pipe(typedoc({
+            module: "commonjs",
+            target: "es2015",
+            out: "docs/",
+			name: "Lines Intersections",
+			json: "docs/docs.json",
+        }));
+}
 
 
 /**

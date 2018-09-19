@@ -9,7 +9,7 @@ const EVENT_RIGHT = 1;
 
 
 /**
- * Returns true if the two given lines have an endpoint in common..
+ * Returns true if the two given lines have an endpoint in common.
  * 
  * It is the default function for checking if the intersection between 
  * two lines should be ignored.
@@ -71,7 +71,11 @@ function ignoreIntersectionIfEndpointsCoincide(
  */ 
 function modifiedBentleyOttmann(
         ls: number[][][], 
-        ignoreIntersectionFunc: ((l1: number[][], l2: number[][]) => boolean) | boolean) {
+		ignoreIntersectionFunc: ((l1: number[][], l2: number[][]) => boolean) | boolean): {
+			p: number[];
+			l1: number[][];
+			l2: number[][];
+		}[] {
 
 	if (ignoreIntersectionFunc === true) { 
 		ignoreIntersectionFunc = ignoreIntersectionIfEndpointsCoincide;

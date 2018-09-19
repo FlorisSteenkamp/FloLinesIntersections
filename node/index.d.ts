@@ -37,6 +37,6 @@
 declare function modifiedBentleyOttmann(ls: number[][][], ignoreIntersectionFunc: ((l1: number[][], l2: number[][]) => boolean) | boolean): {
     p: number[];
     l1: number[][];
-    l2: any;
+    l2: number[][];
 }[];
 export default modifiedBentleyOttmann;

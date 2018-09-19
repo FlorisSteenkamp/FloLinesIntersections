@@ -6,7 +6,7 @@ const DELTA = 1e-10;
 const EVENT_LEFT = 0;
 const EVENT_RIGHT = 1;
 /**
- * Returns true if the two given lines have an endpoint in common..
+ * Returns true if the two given lines have an endpoint in common.
  *
  * It is the default function for checking if the intersection between
  * two lines should be ignored.
