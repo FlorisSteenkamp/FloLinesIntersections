@@ -1,8 +1,5 @@
-.project
 .nyc_output
-.npm-debug.log
-referenced papers
-node_modules
-coverage
 npm-debug.log
-
+papers
+node_modules
+c.bat

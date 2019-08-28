@@ -1,16 +1,16 @@
 {
     "compilerOptions": {
-        "alwaysStrict": true,
+        "charset": "utf8",
+        "strict": true,
         "module": "commonjs",
-        "noImplicitAny": true,
-        "noImplicitThis": true,
         "target": "es2015",
         "declaration": true,
-        "noEmitOnError": true
+        "noEmitOnError": true,
+        "sourceMap": true,
+        "outDir": "node"
     },
     "include": [
-        "index.ts",
-        "src/**/*"
+        "src/**/*.ts"
     ],
     "exclude": [
         "node_modules"

@@ -1,80 +1,52 @@
 {
-  "name": "flo-lines-intersections",
-  "version": "0.2.0",
-  "description": "Simple library for finding lines intersections fast.",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/FlorisSteenkamp/FloLinesIntersections.git"
-  },
-  "bugs": {
-    "url": "https://github.com/FlorisSteenkamp/FloLinesIntersections/issues"
-  },
-  "private": false,
-  "main": "node/index.js",
-  "typings": "node/index",
-  "directories": {
-    "test": "test"
-  },
-  "keywords": [
-    "lines",
-    "line",
-    "segement",
-    "segments",
-    "intersection",
-    "intersections",
-    "fast"
-  ],
-  "author": "Floris Steenkamp",
-  "license": "MIT",
-  "homepage": "http://mat-demo.appspot.com/#!/test-polynomials",
-  "devDependencies": {
-    "babel-cli": "^6.22.2",
-    "babel-core": "^6.26.0",
-    "babel-preset-env": "^1.6.0",
-    "babelify": "^7.3.0",
-    "browserify": "^13.1.0",
-    "chai": "^4.1.2",
-    "coveralls": "^3.0.0",
-    "gulp": "^3.9.1",
-    "gulp-concat": "^2.6.0",
-    "gulp-derequire": "^2.1.0",
-    "gulp-rename": "^1.2.2",
-    "gulp-sourcemaps": "^1.6.0",
-    "gulp-typedoc": "^2.2.0",
-    "gulp-typescript": "^3.2.3",
-    "gulp-uglify": "^2.0.0",
-    "istanbul": "^0.4.5",
-    "jsdoc": "3.4.x",
-    "mocha": "^3.5.3",
-    "nyc": "^11.2.1",
-    "transform": "^1.1.2",
-    "tsify": "^3.0.3",
-    "typedoc": "^0.11.1",
-    "typescript": "^2.6.2",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0",
-    "vinyl-transform": "^1.0.0"
-  },
-  "scripts": {
-    "build": "gulp",
-    "build-node": "gulp node",
-    "build-browser": "gulp browser",
-    "test-only": "mocha --compilers js:babel-core/register ./test/js",
-    "test": "npm run build && npm run test-only",
-    "coverage": "./node_modules/.bin/nyc --reporter=html --reporter=text mocha --compilers js:babel-core/register ./test/js",
-    "docs": "cd docs && jsdoc --template jsdoc-json --destination doc.json -c conf.json",
-    "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls"
-  },
-  "browserify": {
-    "transform": [
-      [
-        "babelify",
-        {
-          "presets": [
-            "env"
-          ]
-        }
-      ]
-    ]
-  }
+    "name": "flo-lines-intersections",
+    "version": "0.2.0",
+    "description": "Simple robust library for finding lines intersections fast.",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/FlorisSteenkamp/FloLinesIntersections.git"
+    },
+    "bugs": {
+        "url": "https://github.com/FlorisSteenkamp/FloLinesIntersections/issues"
+    },
+    "private": false,
+    "main": "node/index",
+    "directories": {
+        "test": "test"
+    },
+    "keywords": [
+        "line",
+        "segement",
+        "intersection",
+        "robust",
+        "fast"
+    ],
+    "author": "Floris Steenkamp",
+    "license": "MIT",
+    "homepage": "https://mat-demo.appspot.com/#!/lines-intersections",
+    "dependencies": {
+        "flo-vector2d": "^1.0.1"
+    },
+    "devDependencies": {
+        "@istanbuljs/nyc-config-typescript": "^0.1.3",
+        "@types/chai": "^4.2.0",
+        "@types/mocha": "^5.2.7",
+        "chai": "^4.2.0",
+        "mocha": "^6.2.0",
+        "nyc": "^14.1.1",
+        "rimraf": "^2.7.1",
+        "source-map-support": "^0.5.13",
+        "ts-loader": "^6.0.4",
+        "ts-node": "^8.3.0",
+        "typedoc": "^0.15.0",
+        "typescript": "^3.6.2",
+        "webpack": "^4.39.3",
+        "webpack-cli": "^3.3.7"
+    },
+    "scripts": {
+        "build": "npm run build-node && npm run build-browser",
+        "build-node": "rimraf node && tsc",
+        "build-browser": "rimraf browser && webpack",
+        "test": "nyc mocha"
+    }
 }
