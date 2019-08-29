@@ -114,7 +114,7 @@ let edgeCaseLs = [
 describe('linesIntersections', function() {
 	it('should correctly find some simple line intersections', 
 	function() {
-		let is = linesIntersections(ls);
+		let is = linesIntersections(ls, false);
 		
 		expect(is.length).to.equal(3);
 		
@@ -138,12 +138,13 @@ describe('linesIntersections', function() {
 		// Get intersections via a naive sure-fire method that should
 		// match the modified method.
 		let is1 = naive(ls);
-		let is2 = linesIntersections(ls);
+		let is2 = linesIntersections(ls, false);
 		
 		expect(is2.length).to.equal(1382);
 		expect(is2.length).to.equal(is1.length);
 	});
 	
+
 	it('should not modify the input line segment objects',
 	function() {
 		// Copy the test lines and add a simple object
@@ -154,7 +155,7 @@ describe('linesIntersections', function() {
 			(l_ as any).apple = 'pear'; // add some random property
 			ls_.push(l_);
 		}
-		let is = linesIntersections(ls_);
+		let is = linesIntersections(ls_, false);
 		
 		expect(is.length).to.equal(3);
 		
@@ -203,16 +204,25 @@ describe('linesIntersections', function() {
 		// Get intersections via a naive sure-fire method that should
 		// match the modified method.
 		let is1 = naive(ls);
-		let is2 = linesIntersections(ls);
+		let is2 = linesIntersections(ls, false);
 		
 		expect(is2.length).to.equal(is1.length);
 	});
 	
+
+	it('should not return intersections of endpoint-coinciding lines if the ignore parameter === true',
+	function() {
+		let ls = square;
+		let is = linesIntersections(ls, true);
+		
+		expect(is.length).to.equal(0);
+	});
+
 	
 	it('should correctly handle zero lines case',
 	function() {
 		let ls: number[][][] = [];
-		let is = linesIntersections(ls);
+		let is = linesIntersections(ls, false);
 		
 		expect(is.length).to.equal(0);
 	});
@@ -221,7 +231,7 @@ describe('linesIntersections', function() {
 	it('should correctly handle single line case',
 	function() {
 		let ls = [[[0,0],[1,1]]];
-		let is = linesIntersections(ls);
+		let is = linesIntersections(ls, false);
 		
 		expect(is.length).to.equal(0);
 	});
@@ -231,13 +241,69 @@ describe('linesIntersections', function() {
 	function() {
 		let ls = square;
 		{
-			let is = linesIntersections(ls);
+			let is = linesIntersections(ls, true);
+			expect(is.length).to.equal(0);
+		}
+
+		{
+			let is = linesIntersections(ls, false);
 			expect(is.length).to.equal(4);
 		}
 
 		{
+			let is = linesIntersections(ls, undefined);
+			expect(is.length).to.equal(0);
+		}
+	});
+
+
+	it('should not return intersections of lines outside some bound if the ignore parameter specifies such a function',
+	function() {
+		// Returns true if any point in the line is outside the square
+		// box [[0.1,0.1],[0.9,0.9]].
+		function lineOutOfBounds(l: number[][]) {
+			if (l[0][0] < 0.1 || l[0][1] < 0.1 ||
+				l[1][0] < 0.1 || l[1][1] < 0.1 ||
+				l[0][0] > 0.9 || l[0][1] > 0.9 ||
+				l[1][0] > 0.9 || l[1][1] > 0.9) {
+					return true; // Ignore it
+				}
+				return false; // Don't ignore
+		}
+		
+		function anyOutOfBounds(l1: number[][], l2: number[][]) {
+			return (lineOutOfBounds(l1) || 
+					lineOutOfBounds(l2));
+		}
+		
+		// Random lines
+		const SCALE_FACTOR = 0.3;
+		const N = 1000;
+		const SEEDS = [11111,22222,33333,44444];
+		
+		let ls = [];
+		let rarrs = [0,1,2,3].map(i => randomArray(N,0,1,SEEDS[i]).vs);
+		for (let i=0; i<N; i++) {
+			let p1 = [rarrs[0][i],rarrs[1][i]];
+			let p2 = [rarrs[2][i],rarrs[3][i]];
+			let s1 = scale(fromTo(p1,p2), SCALE_FACTOR);
+			let p3 = [p1[0] + s1[0], p1[1] + s1[1]];
+			
+			ls.push([p1,p3]);
+		}
+
+		{
 			let is = linesIntersections(ls);
-			expect(is.length).to.equal(4);
+			expect(is.length).to.equal(9116);
+		}
+		
+		{
+			let is = linesIntersections(ls, anyOutOfBounds);
+			expect(is.length).to.equal(5151);
+
+			for (let i=0; i<is.length; i++) {
+				assert(!anyOutOfBounds(is[i].l1, is[i].l1));  
+			}
 		}
 	});
 });

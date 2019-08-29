@@ -6,6 +6,29 @@ const EVENT_RIGHT = 1;
 
 
 /**
+ * Returns true if the two given lines have an endpoint in common.
+ * 
+ * It is the default function for checking if the intersection between 
+ * two lines should be ignored.
+ * 
+ * @private
+ * @param l1 A line.
+ * @param l2 Another line.
+ */
+function endpointsCoincide(
+		l1: number[][],
+		l2: number[][]) {
+
+	let [p1,p2] = l1;
+	let [p3,p4] = l2;
+	return ((p1[0] === p3[0] && p1[1] === p3[1]) || 
+		(p2[0] === p3[0] && p2[1] === p3[1]) ||
+		(p1[0] === p4[0] && p1[1] === p4[1]) || 
+		(p2[0] === p4[0] && p2[1] === p4[1]));
+}
+
+
+/**
  * Find line segment-segment intersections via a a scan-line algorithm.
  *  
  * The algorithm is the same as Bentley-Ottmann except that it replaces a binary 
@@ -21,6 +44,10 @@ const EVENT_RIGHT = 1;
  * line segment objects that won't be lost.
  * 
  * @param ls An array of line segments
+ * @param ignoreFunction If set to true line segments with coinciding endpoints' 
+ * intersection will be ignored. If falsey (bar undefined), all intersections 
+ * will be returned. If a function is provided then those intersections for 
+ * which the function returns true will be ignored - defaults to true.
  * @example
  * linesIntersections([
  * 			[[0,0],     [1,1]], 
@@ -30,10 +57,16 @@ const EVENT_RIGHT = 1;
  *			[[0.2,0],   [0.2,1]]
  * ]);
  */ 
-function linesIntersections(ls: number[][][]): {
-    	p: number[];
-    	l1: number[][];
-    	l2: number[][]; }[] {
+function linesIntersections(
+		ls: number[][][],
+		ignoreFunction: ((l1: number[][], l2: number[][]) => boolean) | boolean = endpointsCoincide): {
+			p: number[];
+			l1: number[][];
+			l2: number[][]; }[] {
+
+	if (ignoreFunction === true) { 
+		ignoreFunction = endpointsCoincide;
+	}
 
 	// Initialize event queue to equal all segment endpoints.
 	let events: IEvent[] = [];
@@ -57,8 +90,14 @@ function linesIntersections(ls: number[][][]): {
     	
    		if (event.type === EVENT_LEFT) {
    			for (let activeLine of activeLines.values()) {
+   				if (ignoreFunction && ignoreFunction(l,activeLine)) { 
+					continue; 
+				}
+
 				let p = segSegIntersection(l, activeLine);
-   				if (!p) { continue; }
+				if (!p) {
+					continue;
+				}
    				
    				intersections.push({p, l1: l, l2: activeLine });
    			}

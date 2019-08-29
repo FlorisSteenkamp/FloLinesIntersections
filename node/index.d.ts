@@ -14,6 +14,10 @@
  * line segment objects that won't be lost.
  *
  * @param ls An array of line segments
+ * @param ignoreFunction If set to true line segments with coinciding endpoints'
+ * intersection will be ignored. If falsey (bar undefined), all intersections
+ * will be returned. If a function is provided then those intersections for
+ * which the function returns true will be ignored - defaults to true.
  * @example
  * linesIntersections([
  * 			[[0,0],     [1,1]],
@@ -23,7 +27,7 @@
  *			[[0.2,0],   [0.2,1]]
  * ]);
  */
-declare function linesIntersections(ls: number[][][]): {
+declare function linesIntersections(ls: number[][][], ignoreFunction?: ((l1: number[][], l2: number[][]) => boolean) | boolean): {
     p: number[];
     l1: number[][];
     l2: number[][];

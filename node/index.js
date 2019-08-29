@@ -4,6 +4,24 @@ const flo_vector2d_1 = require("flo-vector2d");
 const EVENT_LEFT = 0;
 const EVENT_RIGHT = 1;
 /**
+ * Returns true if the two given lines have an endpoint in common.
+ *
+ * It is the default function for checking if the intersection between
+ * two lines should be ignored.
+ *
+ * @private
+ * @param l1 A line.
+ * @param l2 Another line.
+ */
+function endpointsCoincide(l1, l2) {
+    let [p1, p2] = l1;
+    let [p3, p4] = l2;
+    return ((p1[0] === p3[0] && p1[1] === p3[1]) ||
+        (p2[0] === p3[0] && p2[1] === p3[1]) ||
+        (p1[0] === p4[0] && p1[1] === p4[1]) ||
+        (p2[0] === p4[0] && p2[1] === p4[1]));
+}
+/**
  * Find line segment-segment intersections via a a scan-line algorithm.
  *
  * The algorithm is the same as Bentley-Ottmann except that it replaces a binary
@@ -19,6 +37,10 @@ const EVENT_RIGHT = 1;
  * line segment objects that won't be lost.
  *
  * @param ls An array of line segments
+ * @param ignoreFunction If set to true line segments with coinciding endpoints'
+ * intersection will be ignored. If falsey (bar undefined), all intersections
+ * will be returned. If a function is provided then those intersections for
+ * which the function returns true will be ignored - defaults to true.
  * @example
  * linesIntersections([
  * 			[[0,0],     [1,1]],
@@ -28,7 +50,10 @@ const EVENT_RIGHT = 1;
  *			[[0.2,0],   [0.2,1]]
  * ]);
  */
-function linesIntersections(ls) {
+function linesIntersections(ls, ignoreFunction = endpointsCoincide) {
+    if (ignoreFunction === true) {
+        ignoreFunction = endpointsCoincide;
+    }
     // Initialize event queue to equal all segment endpoints.
     let events = [];
     for (let i = 0; i < ls.length; i++) {
@@ -45,6 +70,9 @@ function linesIntersections(ls) {
         let l = event.l;
         if (event.type === EVENT_LEFT) {
             for (let activeLine of activeLines.values()) {
+                if (ignoreFunction && ignoreFunction(l, activeLine)) {
+                    continue;
+                }
                 let p = flo_vector2d_1.segSegIntersection(l, activeLine);
                 if (!p) {
                     continue;
